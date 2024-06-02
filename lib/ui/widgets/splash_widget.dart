@@ -18,7 +18,7 @@ class _SplashWidgetState extends State<SplashWidget> {
   }
 
   Future<void> _moveToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 4));
 
     if (mounted) {
       Navigator.pushReplacement(context,
