@@ -22,7 +22,7 @@ class _SplashWidgetState extends State<SplashWidget> {
 
     if (mounted) {
       Navigator.pushReplacement(context,
-          CupertinoPageRoute(builder: (context) => const TodoListScreen()));
+          MaterialPageRoute(builder: (context) => const TodoListScreen()));
     }
   }
 
