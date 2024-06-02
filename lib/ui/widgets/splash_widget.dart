@@ -34,7 +34,7 @@ class _SplashWidgetState extends State<SplashWidget> {
         children: [
           Lottie.asset(
             'assets/lotties/splash_screen.json',
-            width: 300,
+            width: 200,
             height: 300,
             fit: BoxFit.scaleDown,
           ),
