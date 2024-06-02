@@ -77,7 +77,12 @@ class _AddNewTodoState extends State<AddNewTodoScreen> {
                     Navigator.pop(context);
                   }
                 },
-                child: const Text('Add'),
+                child: const Text(
+                  'Add Todo',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
               ),
             ],
           ),
