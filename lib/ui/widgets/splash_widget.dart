@@ -33,7 +33,7 @@ class _SplashWidgetState extends State<SplashWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Lottie.asset(
-            'assets/lotties/splash_screen.json',
+            'assets/lotties/splash_screen2.json',
             width: MediaQuery.of(context).size.width * 0.6,
             height: MediaQuery.of(context).size.height * 0.3,
             fit: BoxFit.scaleDown,
