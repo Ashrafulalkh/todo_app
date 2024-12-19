@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:todo_app/ui/screens/todo_list/todo_list_screen.dart';
+import 'package:get/get.dart';
+import 'package:todo_app/ui/screens/auth/sign_in_screen.dart';
 
 class SplashWidget extends StatefulWidget {
   const SplashWidget({super.key});
@@ -18,12 +19,8 @@ class _SplashWidgetState extends State<SplashWidget> {
   }
 
   Future<void> _moveToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 4));
-
-    if (mounted) {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const TodoListScreen()));
-    }
+    await Future.delayed(const Duration(seconds: 3));
+    Get.to(() => const SignInScreen());
   }
 
   @override

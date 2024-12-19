@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/entities/todo.dart';
+import 'package:todo_app/data/models/todo.dart';
 import 'package:intl/intl.dart';
 
 class TodoItem extends StatelessWidget {

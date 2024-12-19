@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/entities/todo.dart';
+import 'package:todo_app/data/models/todo.dart';
 import 'package:todo_app/ui/screens/add_new_todo_screen.dart';
 import 'package:todo_app/ui/screens/todo_list/all_todo_list.dart';
 import 'package:todo_app/ui/screens/todo_list/done_todo_list.dart';

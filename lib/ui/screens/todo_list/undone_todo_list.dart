@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/entities/todo.dart';
+import 'package:todo_app/data/models/todo.dart';
 import 'package:todo_app/ui/widgets/empty_list_widgets.dart';
 import 'package:todo_app/ui/widgets/todo_item.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
