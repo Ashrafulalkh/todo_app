@@ -115,7 +115,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onPressed: () {
                           _onTapRegisterButton();
                         },
-                        child: const Text('Register'),
+                        child: const Text('Register',style: TextStyle(fontSize: 16),),
                       ),
                     );
                   },
@@ -136,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       },
                       child: const Text(
                         'Sign In',
-                        style: TextStyle(color: AppColors.themeColor),
+                        style: TextStyle(color: AppColors.themeColor,fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],

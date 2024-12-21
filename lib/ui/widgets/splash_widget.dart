@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:get/get.dart';
 import 'package:todo_app/ui/screens/auth/sign_in_screen.dart';
+import 'package:todo_app/ui/screens/todo_list/todo_list_screen.dart';
+import 'package:todo_app/ui/state_holders/auth/auth_controller.dart';
 
 class SplashWidget extends StatefulWidget {
   const SplashWidget({super.key});
@@ -19,10 +21,14 @@ class _SplashWidgetState extends State<SplashWidget> {
   }
 
   Future<void> _moveToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 3));
-    Get.to(() => const SignInScreen());
+    await Future.delayed(const Duration(seconds: 2));
+    bool isLoggedIn = await Get.find<AuthController>().checkAuthState();
+    if(isLoggedIn){
+      Get.offAll(() => const TodoListScreen());
+    }else {
+      Get.offAll(() => const SignInScreen());
+    }
   }
-
   @override
   Widget build(BuildContext context) {
     return Center(

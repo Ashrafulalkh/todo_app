@@ -50,7 +50,7 @@ class TodoApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
           ),
           fixedSize: const Size.fromWidth(double.maxFinite),
-          padding: const EdgeInsets.symmetric(vertical: 15),
+          padding: const EdgeInsets.symmetric(vertical: 14),
         ),
       )
     );

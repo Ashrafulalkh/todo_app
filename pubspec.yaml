@@ -42,6 +42,8 @@ dependencies:
   get: ^4.6.6
   flutter_spinkit: ^5.2.1
   flutter_svg: ^2.0.16
+  shared_preferences: ^2.3.4
+  flutter_launcher_icons: ^0.14.2
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +60,15 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/launcher_icon/launcher_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/launcher_icon/launcher_icon.png"
+
+
+
 # The following section is specific to Flutter packages.
 flutter:
 
@@ -70,6 +81,7 @@ flutter:
   assets:
   - assets/lotties/
   - assets/auth/
+  - assets/launcher_icon/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -12,79 +12,95 @@ class AddNewTodoScreen extends StatefulWidget {
 
 class _AddNewTodoState extends State<AddNewTodoScreen> {
   final TextEditingController _titleTEController = TextEditingController();
-  final TextEditingController _descriptionTEController =
-      TextEditingController();
+  final TextEditingController _descriptionTEController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Add New Todo'),
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Text(
+          'Add New Todo',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _titleTEController,
-                decoration: const InputDecoration(
-                  labelText: 'Title',
-                  hintText: 'Title',
-                ),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (String? value) {
-                  if (value?.trim().isEmpty ?? true) {
-                    return 'Enter Your Title';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              TextFormField(
-                controller: _descriptionTEController,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                  hintText: 'Description',
-                ),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                maxLength: 250,
-                validator: (String? value) {
-                  if (value?.trim().isEmpty ?? true) {
-                    return 'Enter Your Description';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    Todo todo = Todo(
-                      _titleTEController.text.trim(),
-                      _descriptionTEController.text.trim(),
-                      DateTime.now(),
-                    );
-                    widget.onAddTodo(todo);
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text(
-                  'Add Todo',
-                  style: TextStyle(
-                    fontSize: 18,
+        padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 8),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 15,),
+                      TextFormField(
+                        controller: _titleTEController,
+                        decoration: const InputDecoration(
+                          hintText: 'Title',
+                        ),
+                        autovalidateMode: AutovalidateMode.disabled,
+                        validator: (String? value) {
+                          if (value?.trim().isEmpty ?? true) {
+                            return 'Enter Your Title';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      TextFormField(
+                        controller: _descriptionTEController,
+                        decoration: const InputDecoration(
+                          hintText: 'Description',
+                        ),
+                        autovalidateMode: AutovalidateMode.disabled,
+                        maxLines: 6,
+                        validator: (String? value) {
+                          if (value?.trim().isEmpty ?? true) {
+                            return 'Enter Your Description';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      Todo todo = Todo(
+                        _titleTEController.text.trim(),
+                        _descriptionTEController.text.trim(),
+                        DateTime.now(),
+                      );
+                      widget.onAddTodo(todo);
+                      Navigator.pop(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  child: const Text(
+                    'Add Todo',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

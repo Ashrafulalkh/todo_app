@@ -4,33 +4,49 @@ import 'package:todo_app/ui/widgets/empty_list_widgets.dart';
 import 'package:todo_app/ui/widgets/todo_item.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class AllTodoListTab extends StatelessWidget {
-  const AllTodoListTab(
-      {super.key,
-      required this.onDelete,
-      required this.onStatusChange,
-      required this.todoList});
+class AllTodoListTab extends StatefulWidget {
+  const AllTodoListTab({
+    super.key,
+    required this.todoList,
+    required this.onDelete,
+    required this.onStatusChange,
+  });
 
   final List<Todo> todoList;
   final Function(int) onDelete;
   final Function(int) onStatusChange;
 
   @override
+  AllTodoListTabState createState() => AllTodoListTabState();
+}
+
+class AllTodoListTabState extends State<AllTodoListTab> {
+  // When status changes or todo is deleted, the todoList needs to be updated
+  void updateTodoList(int index) {
+    setState(() {
+      // When the status is changed
+      widget.onStatusChange(index);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if(todoList.isEmpty) {
+    if (widget.todoList.isEmpty) {
       return const EmptyListWidgets();
     }
-    return ListView.builder(
-      itemCount: todoList.length,
+    return GridView.builder(
+      itemCount: widget.todoList.length,
       itemBuilder: (context, index) {
         return Slidable(
           key: UniqueKey(),
-          // The start action pane is the one at the left or the top side.
           endActionPane: ActionPane(
             motion: const ScrollMotion(),
-            dismissible: DismissiblePane(onDismissed: () {
-              onDelete(index);
-            }),
+            dismissible: DismissiblePane(
+              onDismissed: () {
+                widget.onDelete(index);
+                setState(() {});
+              },
+            ),
             children: const [
               SlidableAction(
                 onPressed: doNothing,
@@ -42,13 +58,21 @@ class AllTodoListTab extends StatelessWidget {
             ],
           ),
           child: TodoItem(
-            todo: todoList[index],
+            todo: widget.todoList[index],
             onIconButtonPressed: () {
-              onStatusChange(index);
+              updateTodoList(index);
+            },
+            onUpdateTodo: (Todo updatedTodo) {
+              // You can manage the list update logic here
+              setState(() {
+                widget.todoList[index] = updatedTodo;
+              });
             },
           ),
         );
       },
+      gridDelegate:
+      const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
     );
   }
 }

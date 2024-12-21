@@ -4,28 +4,46 @@ import 'package:todo_app/ui/widgets/empty_list_widgets.dart';
 import 'package:todo_app/ui/widgets/todo_item.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class DoneTodoList extends StatelessWidget {
-  const DoneTodoList({super.key, required this.todoList, required this.onDelete, required this.onStatusChange});
+class DoneTodoList extends StatefulWidget {
+  const DoneTodoList({
+    super.key,
+    required this.todoList,
+    required this.onDelete,
+    required this.onStatusChange,
+  });
 
   final List<Todo> todoList;
   final Function(int) onDelete;
   final Function(int) onStatusChange;
 
   @override
+  DoneTodoListState createState() => DoneTodoListState();
+}
+
+class DoneTodoListState extends State<DoneTodoList> {
+
+  void updateTodoList(int index) {
+    setState(() {
+      widget.onStatusChange(index); // Triggering the status change
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if(todoList.isEmpty) {
+    if (widget.todoList.isEmpty) {
       return const EmptyListWidgets();
     }
-    return ListView.builder(
-      itemCount: todoList.length,
+
+    return GridView.builder(
+      itemCount: widget.todoList.length,
       itemBuilder: (context, index) {
         return Slidable(
           key: UniqueKey(),
-          // The start action pane is the one at the left or the top side.
           endActionPane: ActionPane(
             motion: const ScrollMotion(),
             dismissible: DismissiblePane(onDismissed: () {
-              onDelete(index);
+              widget.onDelete(index);
+              setState(() {});
             }),
             children: const [
               SlidableAction(
@@ -38,13 +56,19 @@ class DoneTodoList extends StatelessWidget {
             ],
           ),
           child: TodoItem(
-            todo: todoList[index],
+            todo: widget.todoList[index],
             onIconButtonPressed: () {
-              onStatusChange(index);
+              updateTodoList(index);
+            },
+            onUpdateTodo: (Todo updatedTodo) {
+              setState(() {
+                widget.todoList[index] = updatedTodo;
+              });
             },
           ),
         );
       },
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
     );
   }
 }

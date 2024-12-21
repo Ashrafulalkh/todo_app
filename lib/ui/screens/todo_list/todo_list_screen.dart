@@ -4,6 +4,7 @@ import 'package:todo_app/ui/screens/add_new_todo_screen.dart';
 import 'package:todo_app/ui/screens/todo_list/all_todo_list.dart';
 import 'package:todo_app/ui/screens/todo_list/done_todo_list.dart';
 import 'package:todo_app/ui/screens/todo_list/undone_todo_list.dart';
+import 'package:todo_app/ui/utils/app_colors.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({super.key});
@@ -12,55 +13,34 @@ class TodoListScreen extends StatefulWidget {
   State<TodoListScreen> createState() => _TodoListScreenState();
 }
 
-final List<Todo> _todoList = [];
-
 class _TodoListScreenState extends State<TodoListScreen> {
+  final List<Todo> _todoList = [];
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Text('Todo List'),
+          title: const Text(
+            'Todo List',
+            style: TextStyle(color: Colors.black),
+          ),
           bottom: _buildTabBar(),
         ),
-        body: TabBarView(
-          children: [
-            AllTodoListTab(
-              onDelete:_deleteTodo,
-              onStatusChange: _toggleTodoStatus,
-              todoList: _todoList,
-            ),
-            UndoneTodoList(
-              onDelete:_deleteTodo,
-              onStatusChange: _toggleTodoStatus,
-              todoList: _todoList.where((item) => item.isDone == false).toList(),
-            ),
-            DoneTodoList(
-              onDelete:_deleteTodo,
-              onStatusChange: _toggleTodoStatus,
-              todoList: _todoList.where((item) => item.isDone == true).toList(),
-            ),
-          ],
-        ),
-        floatingActionButton: _buildAddTodoListButton(context),
+        body: _buildTabBarView(),
+        floatingActionButton: _buildAddTodoButton(),
       ),
     );
   }
 
-  Widget _buildAddTodoListButton(BuildContext context) {
+  /// Build FloatingActionButton
+  Widget _buildAddTodoButton() {
     return FloatingActionButton.extended(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AddNewTodoScreen(onAddTodo: _addNewTodo),
-          ),
-        );
-      },
-      foregroundColor: Colors.white,
-      backgroundColor: Colors.green,
-      tooltip: 'Add New Todo',
+      onPressed: () => _navigateToAddNewTodoScreen(),
+      foregroundColor: Colors.black,
+      backgroundColor: AppColors.themeColor,
       label: const Text('Add New Todo'),
       icon: const Icon(Icons.add),
       shape: RoundedRectangleBorder(
@@ -69,41 +49,71 @@ class _TodoListScreenState extends State<TodoListScreen> {
     );
   }
 
+  /// Build TabBar
   TabBar _buildTabBar() {
     return const TabBar(
       labelColor: Colors.white,
+      unselectedLabelColor: Colors.black,
+      indicatorColor: Colors.white,
       tabs: [
-        Tab(
-          text: 'All',
+        Tab(text: 'All'),
+        Tab(text: 'Undone'),
+        Tab(text: 'Done'),
+      ],
+    );
+  }
+
+  /// Build TabBarView with respective Todo lists
+  Widget _buildTabBarView() {
+    return TabBarView(
+      children: [
+        AllTodoListTab(
+          todoList: _todoList,
+          onDelete: _deleteTodo,
+          onStatusChange: _toggleTodoStatus,
         ),
-        Tab(
-          text: 'Undone',
+        UndoneTodoList(
+          todoList: _todoList.where((todo) => !todo.isDone).toList(),
+          onDelete: _deleteTodo,
+          onStatusChange: _toggleTodoStatus,
         ),
-        Tab(
-          text: 'Done',
+        DoneTodoList(
+          todoList: _todoList.where((todo) => todo.isDone).toList(),
+          onDelete: _deleteTodo,
+          onStatusChange: _toggleTodoStatus,
         ),
       ],
     );
   }
 
+  /// Add a new Todo and refresh UI
   void _addNewTodo(Todo todo) {
-    _todoList.add(todo);
-    if (mounted) {
-      setState(() {});
-    }
+    setState(() {
+      _todoList.add(todo);
+    });
   }
 
+  /// Delete a Todo by index
   void _deleteTodo(int index) {
-    _todoList.removeAt(index);
-    if (mounted) {
-      setState(() {});
-    }
+    setState(() {
+      _todoList.removeAt(index);
+    });
   }
 
+  /// Toggle a Todo's done status
   void _toggleTodoStatus(int index) {
-    _todoList[index].isDone = !_todoList[index].isDone;
-    if (mounted) {
-      setState(() {});
-    }
+    setState(() {
+      _todoList[index].isDone = !_todoList[index].isDone;
+    });
+  }
+
+  /// Navigate to the AddNewTodoScreen
+  void _navigateToAddNewTodoScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddNewTodoScreen(onAddTodo: _addNewTodo),
+      ),
+    );
   }
 }
