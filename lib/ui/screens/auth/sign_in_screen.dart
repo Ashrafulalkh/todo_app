@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:todo_app/ui/screens/auth/Sign_up_screen.dart';
+import 'package:todo_app/ui/screens/auth/sign_up_screen.dart';
 import 'package:todo_app/ui/screens/todo_list/todo_list_screen.dart';
 import 'package:todo_app/ui/utils/app_colors.dart';
 import 'package:todo_app/ui/utils/assets_path.dart';
