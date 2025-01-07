@@ -1,10 +1,18 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:todo_app/data/models/todo.dart';
+import 'package:todo_app/data/models/user/user_model.dart';
 import 'package:todo_app/ui/screens/add_new_todo_screen.dart';
 import 'package:todo_app/ui/screens/todo_list/all_todo_list.dart';
 import 'package:todo_app/ui/screens/todo_list/done_todo_list.dart';
 import 'package:todo_app/ui/screens/todo_list/undone_todo_list.dart';
+import 'package:todo_app/ui/state_holders/todo%20list/all_todo_list_controller.dart';
+import 'package:todo_app/ui/state_holders/todo%20list/update_todo_item_status_controller.dart';
+import 'package:todo_app/ui/state_holders/user%20details/user_details_controller.dart';
 import 'package:todo_app/ui/utils/app_colors.dart';
+import 'package:todo_app/ui/widgets/package%20widget/spinkit%20package/spinkit_loader.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({super.key});
@@ -15,6 +23,39 @@ class TodoListScreen extends StatefulWidget {
 
 class _TodoListScreenState extends State<TodoListScreen> {
   final List<Todo> _todoList = [];
+  UserModel? user;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeData();
+  }
+
+  // Separate asynchronous method to handle initialization
+  Future<void> _initializeData() async {
+    // Fetch user details and wait for them to load
+    await Get.find<UserDetailsController>().fetchUserDetails();
+
+    // Load user data
+    _fetchUserData();
+
+    // Ensure `user` is loaded before calling the next method
+    if (user != null) {
+      await Get.find<AllTodoListController>().fetchAllTodoList(user!.id);
+    } else {
+      log("User data not found.");
+    }
+
+    setState(() {});
+
+    Get.find<AllTodoListController>().update();
+
+  }
+
+  void _fetchUserData() {
+    user = Get.find<UserDetailsController>()
+        .user; // Replace with your actual logic
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +70,19 @@ class _TodoListScreenState extends State<TodoListScreen> {
           ),
           bottom: _buildTabBar(),
         ),
-        body: _buildTabBarView(),
+        body:
+            GetBuilder<UserDetailsController>(builder: (userDetailsController) {
+          return Visibility(
+              visible: !userDetailsController.inProgress,
+              replacement: const Loader(),
+              child: GetBuilder<AllTodoListController>(
+                  builder: (allTodoListController) {
+                return Visibility(
+                    visible: !allTodoListController.inProgress,
+                    replacement: const Loader(),
+                    child: _buildTabBarView());
+              }));
+        }),
         floatingActionButton: _buildAddTodoButton(),
       ),
     );
@@ -67,30 +120,33 @@ class _TodoListScreenState extends State<TodoListScreen> {
   Widget _buildTabBarView() {
     return TabBarView(
       children: [
-        AllTodoListTab(
-          todoList: _todoList,
-          onDelete: _deleteTodo,
-          onStatusChange: _toggleTodoStatus,
-        ),
-        UndoneTodoList(
-          todoList: _todoList.where((todo) => !todo.isDone).toList(),
-          onDelete: _deleteTodo,
-          onStatusChange: _toggleTodoStatus,
-        ),
-        DoneTodoList(
-          todoList: _todoList.where((todo) => todo.isDone).toList(),
-          onDelete: _deleteTodo,
-          onStatusChange: _toggleTodoStatus,
-        ),
+        GetBuilder<AllTodoListController>(builder: (allTodoListController) {
+          return AllTodoListTab(
+            todoList: allTodoListController.taskList,
+            onDelete: _deleteTodo,
+            onStatusChange: _toggleTodoStatus,
+          );
+        }),
+        GetBuilder<AllTodoListController>(builder: (allTodoListController) {
+          return UndoneTodoList(
+            todoList: allTodoListController.taskList
+                .where((task) => !task.isCompleted)
+                .toList(),
+            onDelete: _deleteTodo,
+            onStatusChange: _toggleTodoStatus,
+          );
+        }),
+        GetBuilder<AllTodoListController>(builder: (allTodoListController) {
+          return DoneTodoList(
+            todoList: allTodoListController.taskList
+                .where((task) => task.isCompleted)
+                .toList(),
+            onDelete: _deleteTodo,
+            onStatusChange: _toggleTodoStatus,
+          );
+        }),
       ],
     );
-  }
-
-  /// Add a new Todo and refresh UI
-  void _addNewTodo(Todo todo) {
-    setState(() {
-      _todoList.add(todo);
-    });
   }
 
   /// Delete a Todo by index
@@ -101,19 +157,30 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   /// Toggle a Todo's done status
-  void _toggleTodoStatus(int index) {
-    setState(() {
-      _todoList[index].isDone = !_todoList[index].isDone;
-    });
+  void _toggleTodoStatus() async {
+    Get.find<AllTodoListController>().fetchAllTodoList(user?.id ?? '');
   }
 
-  /// Navigate to the AddNewTodoScreen
-  void _navigateToAddNewTodoScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddNewTodoScreen(onAddTodo: _addNewTodo),
+  Future<void> _navigateToAddNewTodoScreen() async {
+    Get.to(
+      () => GetBuilder<UserDetailsController>(
+        builder: (userDetailsController) {
+          return AddNewTodoScreen(
+            user: userDetailsController.user,
+          );
+        },
       ),
+    )?.then(
+      (result) async {
+        // Check the result and perform actions
+        if (result == 'added') {
+          // Example: Refresh the list or show a success message
+          await Get.find<AllTodoListController>()
+              .fetchAllTodoList(user?.id ?? '');
+        } else {
+          log("No new Todo was added or operation was canceled.");
+        }
+      },
     );
   }
 }

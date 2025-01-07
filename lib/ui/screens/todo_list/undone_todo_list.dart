@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/data/models/task/task_model.dart';
 import 'package:todo_app/data/models/todo.dart';
 import 'package:todo_app/ui/widgets/empty_list_widgets.dart';
 import 'package:todo_app/ui/widgets/todo_item.dart';
@@ -12,22 +13,15 @@ class UndoneTodoList extends StatefulWidget {
     required this.onStatusChange,
   });
 
-  final List<Todo> todoList;
+  final List<TaskModel> todoList;
   final Function(int) onDelete;
-  final Function(int) onStatusChange;
+  final Function() onStatusChange;
 
   @override
   UndoneTodoListState createState() => UndoneTodoListState();
 }
 
 class UndoneTodoListState extends State<UndoneTodoList> {
-  // This function will be used for handling the update of todo status
-  void updateTodoList(int index) {
-    setState(() {
-      widget.onStatusChange(index); // Triggering status change of the todo
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     if (widget.todoList.isEmpty) {
@@ -57,14 +51,13 @@ class UndoneTodoListState extends State<UndoneTodoList> {
           ),
           child: TodoItem(
             todo: widget.todoList[index],
-            onIconButtonPressed: () {
-              updateTodoList(index); // Triggering the update
-            },
-            onUpdateTodo: (Todo updatedTodo) {
+            onUpdateTodo: (TaskModel updatedTodo) {
               setState(() {
                 widget.todoList[index] = updatedTodo; // Update the todo with new data
               });
-            },
+            }, onTodoItemStatusChange: () {
+              widget.onStatusChange();
+          },
           ),
         );
       },

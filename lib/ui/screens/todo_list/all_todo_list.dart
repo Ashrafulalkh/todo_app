@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:todo_app/data/models/task/task_model.dart';
 import 'package:todo_app/data/models/todo.dart';
+import 'package:todo_app/ui/state_holders/todo%20list/all_todo_list_controller.dart';
+import 'package:todo_app/ui/state_holders/todo%20list/update_todo_item_status_controller.dart';
 import 'package:todo_app/ui/widgets/empty_list_widgets.dart';
+import 'package:todo_app/ui/widgets/package%20widget/spinkit%20package/spinkit_loader.dart';
 import 'package:todo_app/ui/widgets/todo_item.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -12,23 +17,15 @@ class AllTodoListTab extends StatefulWidget {
     required this.onStatusChange,
   });
 
-  final List<Todo> todoList;
+  final List<TaskModel> todoList;
   final Function(int) onDelete;
-  final Function(int) onStatusChange;
+  final Function() onStatusChange;
 
   @override
   AllTodoListTabState createState() => AllTodoListTabState();
 }
 
 class AllTodoListTabState extends State<AllTodoListTab> {
-  // When status changes or todo is deleted, the todoList needs to be updated
-  void updateTodoList(int index) {
-    setState(() {
-      // When the status is changed
-      widget.onStatusChange(index);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     if (widget.todoList.isEmpty) {
@@ -59,15 +56,14 @@ class AllTodoListTabState extends State<AllTodoListTab> {
           ),
           child: TodoItem(
             todo: widget.todoList[index],
-            onIconButtonPressed: () {
-              updateTodoList(index);
-            },
-            onUpdateTodo: (Todo updatedTodo) {
+            onUpdateTodo: (TaskModel updatedTodo) {
               // You can manage the list update logic here
               setState(() {
                 widget.todoList[index] = updatedTodo;
               });
-            },
+            }, onTodoItemStatusChange: () {
+              widget.onStatusChange();
+          },
           ),
         );
       },

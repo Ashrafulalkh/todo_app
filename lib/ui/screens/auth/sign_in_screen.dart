@@ -21,6 +21,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  bool _showPassword = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,16 +61,28 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 16,
                 ),
                 TextFormField(
+                  obscureText: _showPassword == false,
                   controller: _passwordController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        _showPassword = !_showPassword;
+                        if (mounted) {
+                          setState(() {});
+                        }
+                      },
+                      icon: Icon(_showPassword
+                          ? Icons.visibility_off
+                          : Icons.visibility),
+                    ),
+                  ),
                   validator: (String? value) {
-                    if (value!.isEmpty) {
-                      return 'Enter a password';
+                    if (value?.trim().isEmpty ?? true) {
+                      return 'Enter Your Password';
                     }
                     return null;
                   },
-                  decoration:
-                      const InputDecoration(hintText: 'Enter your password'),
                 ),
                 const SizedBox(
                   height: 16,

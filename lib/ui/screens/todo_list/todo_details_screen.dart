@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_app/data/models/task/task_model.dart';
 import 'package:todo_app/data/models/todo.dart';
 import 'package:todo_app/ui/screens/todo_list/edit_todo_screen.dart';
 import 'package:todo_app/ui/utils/app_colors.dart';
@@ -12,8 +13,8 @@ class TodoDetailsScreen extends StatelessWidget {
     required this.onUpdateTodo,
   });
 
-  final Todo todo;
-  final ValueChanged<Todo> onUpdateTodo;
+  final TaskModel todo;
+  final ValueChanged<TaskModel> onUpdateTodo;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +56,7 @@ class TodoDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              DateFormat.yMMMMEEEEd().add_jm().format(todo.dateTime),
+              DateFormat.yMMMMEEEEd().add_jm().format(todo.createdAt!),
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey.shade600,
@@ -74,7 +75,7 @@ class TodoDetailsScreen extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            if (todo.isDone)
+            if (todo.isCompleted)
               const Align(
                 alignment: Alignment.centerRight,
                 child: Chip(

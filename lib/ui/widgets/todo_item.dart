@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_app/data/models/task/task_model.dart';
 import 'package:todo_app/data/models/todo.dart';
 import 'package:todo_app/ui/screens/todo_list/todo_details_screen.dart';
+import 'package:todo_app/ui/state_holders/todo%20list/update_todo_item_status_controller.dart';
 
 class TodoItem extends StatelessWidget {
   const TodoItem({
     super.key,
     required this.todo,
-    required this.onIconButtonPressed,
-    required this.onUpdateTodo,
+    required this.onUpdateTodo, required this.onTodoItemStatusChange,
   });
 
-  final Todo todo;
-  final VoidCallback onIconButtonPressed;
-  final ValueChanged<Todo> onUpdateTodo;
+  final TaskModel todo;
+
+  final VoidCallback onTodoItemStatusChange;
+  final ValueChanged<TaskModel> onUpdateTodo;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class TodoItem extends StatelessWidget {
         elevation: 3,
         margin: const EdgeInsets.all(8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        color: _getCardBGColor(todo.isDone),
+        color: _getCardBGColor(),
         shadowColor: Colors.grey.withOpacity(0.3),
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -44,9 +46,9 @@ class TodoItem extends StatelessWidget {
                     child: Text(
                       todo.title,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 17,
                         fontWeight: FontWeight.w600,
-                        decoration: _getTextDecoration(todo.isDone),
+                        decoration: _getTextDecoration(),
                         color: Colors.black87,
                       ),
                       maxLines: 2,
@@ -55,14 +57,14 @@ class TodoItem extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   GestureDetector(
-                    onTap: onIconButtonPressed,
+                    onTap: _updateTodoItemStatus,
                     child: CircleAvatar(
                       radius: 18,
-                      backgroundColor: todo.isDone
+                      backgroundColor: todo.isCompleted
                           ? Colors.green.shade200
                           : Colors.red.shade200,
                       child: Icon(
-                        _getIcon(todo.isDone),
+                        _getIcon(),
                         color: Colors.white,
                         size: 20,
                       ),
@@ -74,10 +76,10 @@ class TodoItem extends StatelessWidget {
               Text(
                 todo.description,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 15,
                   height: 1.5,
                   color: Colors.black54,
-                  decoration: _getTextDecoration(todo.isDone),
+                  decoration: _getTextDecoration(),
                 ),
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
@@ -86,7 +88,7 @@ class TodoItem extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomRight,
                 child: Text(
-                  DateFormat.yMMMMEEEEd().add_jm().format(todo.dateTime),
+                  DateFormat.yMMMMEEEEd().add_jm().format(todo.createdAt!),
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey.shade600,
@@ -100,15 +102,23 @@ class TodoItem extends StatelessWidget {
     );
   }
 
-  IconData _getIcon(bool isDone) {
-    return isDone ? Icons.check : Icons.pending;
+  IconData _getIcon() {
+    return todo.isCompleted ? Icons.close : Icons.check;
   }
 
-  TextDecoration? _getTextDecoration(bool isDone) {
-    return isDone ? TextDecoration.lineThrough : null;
+  TextDecoration? _getTextDecoration() {
+    return todo.isCompleted ? TextDecoration.lineThrough : null;
   }
 
-  Color _getCardBGColor(bool isDone) {
-    return isDone ? Colors.green.shade50 : Colors.white;
+  Color _getCardBGColor() {
+    return todo.isCompleted ? Colors.green.shade50 : Colors.white;
+  }
+
+  Future<void> _updateTodoItemStatus() async {
+    final result = await Get.find<UpdateTodoItemStatusController>()
+        .updateTodoItemStatus(todo.id, !todo.isCompleted);
+    if(result){
+      onTodoItemStatusChange();
+    }
   }
 }

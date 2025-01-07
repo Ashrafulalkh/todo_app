@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/data/models/task/task_model.dart';
 import 'package:todo_app/data/models/todo.dart';
 import 'package:todo_app/ui/widgets/empty_list_widgets.dart';
 import 'package:todo_app/ui/widgets/todo_item.dart';
@@ -12,22 +13,15 @@ class DoneTodoList extends StatefulWidget {
     required this.onStatusChange,
   });
 
-  final List<Todo> todoList;
+  final List<TaskModel> todoList;
   final Function(int) onDelete;
-  final Function(int) onStatusChange;
+  final Function() onStatusChange;
 
   @override
   DoneTodoListState createState() => DoneTodoListState();
 }
 
 class DoneTodoListState extends State<DoneTodoList> {
-
-  void updateTodoList(int index) {
-    setState(() {
-      widget.onStatusChange(index); // Triggering the status change
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     if (widget.todoList.isEmpty) {
@@ -57,18 +51,19 @@ class DoneTodoListState extends State<DoneTodoList> {
           ),
           child: TodoItem(
             todo: widget.todoList[index],
-            onIconButtonPressed: () {
-              updateTodoList(index);
-            },
-            onUpdateTodo: (Todo updatedTodo) {
+            onUpdateTodo: (TaskModel updatedTodo) {
               setState(() {
                 widget.todoList[index] = updatedTodo;
               });
             },
+            onTodoItemStatusChange: () {
+              widget.onStatusChange();
+            },
           ),
         );
       },
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      gridDelegate:
+          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
     );
   }
 }

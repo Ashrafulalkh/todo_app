@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:todo_app/data/models/task/task_model.dart';
 import 'package:todo_app/data/models/todo.dart';
 
 class EditTodoScreen extends StatefulWidget {
   const EditTodoScreen({super.key, required this.todo});
 
-  final Todo todo;
+  final TaskModel todo;
 
   @override
   State<EditTodoScreen> createState() => _EditTodoScreenState();
@@ -29,12 +30,12 @@ class _EditTodoScreenState extends State<EditTodoScreen> {
     super.dispose();
   }
 
-  void _saveTodo() {
-    widget.todo.title = _titleController.text;
-    widget.todo.description = _descriptionController.text;
-    widget.todo.dateTime = DateTime.now(); // Update timestamp
-    Get.back(result: widget.todo);
-  }
+  // void _saveTodo() {
+  //   widget. = _titleController.text;
+  //   widget.todo.description = _descriptionController.text;
+  //   widget.todo.dateTime = DateTime.now(); // Update timestamp
+  //   Get.back(result: widget.todo);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,7 @@ class _EditTodoScreenState extends State<EditTodoScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.save, color: Colors.black),
-            onPressed: _saveTodo,
+            onPressed:() {}, //_saveTodo,
           ),
         ],
       ),

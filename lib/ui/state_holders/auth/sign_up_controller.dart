@@ -28,7 +28,6 @@ class SignUpController extends GetxController {
           'first_name': firstName,
           'last_name': lastName,
           'email': email,
-          'password': password,
           'created_at': DateTime.now().toIso8601String(),
         },
       );
