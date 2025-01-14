@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/data/models/task/task_model.dart';
-import 'package:todo_app/data/models/todo.dart';
 import 'package:todo_app/ui/screens/todo_list/todo_details_screen.dart';
 import 'package:todo_app/ui/state_holders/todo%20list/update_todo_item_status_controller.dart';
 
@@ -77,21 +76,25 @@ class TodoItem extends StatelessWidget {
                 todo.description,
                 style: TextStyle(
                   fontSize: 15,
-                  height: 1.5,
+                  height: 1.3,
                   color: Colors.black54,
                   decoration: _getTextDecoration(),
                 ),
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
               ),
-              const Spacer(),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  DateFormat.yMMMMEEEEd().add_jm().format(todo.createdAt!),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
+              const SizedBox(height: 4,),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    DateFormat.yMMMMEEEEd().add_jm().format(todo.createdAt!),
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: Colors.grey.shade600,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ),

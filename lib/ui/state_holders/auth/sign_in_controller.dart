@@ -22,6 +22,7 @@ class SignInController extends GetxController {
       isSuccess = true;
       Get.find<AuthController>().saveAccessToken(response.session!.accessToken);
       log('Successful');
+      update();
     } else {
       log('Insert data failed!!');
     }

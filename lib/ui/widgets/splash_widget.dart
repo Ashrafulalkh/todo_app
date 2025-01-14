@@ -21,7 +21,7 @@ class _SplashWidgetState extends State<SplashWidget> {
   }
 
   Future<void> _moveToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     bool isLoggedIn = await Get.find<AuthController>().checkAuthState();
     if(isLoggedIn){
       Get.offAll(() => const TodoListScreen());

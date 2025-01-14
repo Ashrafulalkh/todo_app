@@ -5,14 +5,18 @@ import 'package:get/get.dart';
 import 'package:todo_app/data/models/todo.dart';
 import 'package:todo_app/data/models/user/user_model.dart';
 import 'package:todo_app/ui/screens/add_new_todo_screen.dart';
+import 'package:todo_app/ui/screens/auth/sign_in_screen.dart';
 import 'package:todo_app/ui/screens/todo_list/all_todo_list.dart';
 import 'package:todo_app/ui/screens/todo_list/done_todo_list.dart';
 import 'package:todo_app/ui/screens/todo_list/undone_todo_list.dart';
+import 'package:todo_app/ui/state_holders/auth/auth_controller.dart';
+import 'package:todo_app/ui/state_holders/auth/sign_out_controller.dart';
 import 'package:todo_app/ui/state_holders/todo%20list/all_todo_list_controller.dart';
-import 'package:todo_app/ui/state_holders/todo%20list/update_todo_item_status_controller.dart';
+import 'package:todo_app/ui/state_holders/todo%20list/delete_todo_item_controller.dart';
 import 'package:todo_app/ui/state_holders/user%20details/user_details_controller.dart';
 import 'package:todo_app/ui/utils/app_colors.dart';
 import 'package:todo_app/ui/widgets/package%20widget/spinkit%20package/spinkit_loader.dart';
+import 'package:todo_app/ui/widgets/snack%20bar/snack_bar.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({super.key});
@@ -22,12 +26,12 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-  final List<Todo> _todoList = [];
   UserModel? user;
 
   @override
   void initState() {
     super.initState();
+
     _initializeData();
   }
 
@@ -49,7 +53,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
     setState(() {});
 
     Get.find<AllTodoListController>().update();
-
   }
 
   void _fetchUserData() {
@@ -68,11 +71,23 @@ class _TodoListScreenState extends State<TodoListScreen> {
             'Todo List',
             style: TextStyle(color: Colors.black),
           ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                _signOut();
+              },
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.black,
+                size: 25,
+              ),
+            ),
+          ],
           bottom: _buildTabBar(),
         ),
         body:
             GetBuilder<UserDetailsController>(builder: (userDetailsController) {
-          return Visibility(
+                      return Visibility(
               visible: !userDetailsController.inProgress,
               replacement: const Loader(),
               child: GetBuilder<AllTodoListController>(
@@ -82,7 +97,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     replacement: const Loader(),
                     child: _buildTabBarView());
               }));
-        }),
+                    }),
         floatingActionButton: _buildAddTodoButton(),
       ),
     );
@@ -122,26 +137,29 @@ class _TodoListScreenState extends State<TodoListScreen> {
       children: [
         GetBuilder<AllTodoListController>(builder: (allTodoListController) {
           return AllTodoListTab(
+            key: UniqueKey(),
             todoList: allTodoListController.taskList,
-            onDelete: _deleteTodo,
-            onStatusChange: _toggleTodoStatus,
+            onDelete: _deleteTodoItem,
+            onStatusChange: _toggleTodoStatus, user: user,
           );
         }),
         GetBuilder<AllTodoListController>(builder: (allTodoListController) {
           return UndoneTodoList(
+            key: UniqueKey(),
             todoList: allTodoListController.taskList
                 .where((task) => !task.isCompleted)
                 .toList(),
-            onDelete: _deleteTodo,
+            onDelete: _deleteTodoItem,
             onStatusChange: _toggleTodoStatus,
           );
         }),
         GetBuilder<AllTodoListController>(builder: (allTodoListController) {
           return DoneTodoList(
+            key: UniqueKey(),
             todoList: allTodoListController.taskList
                 .where((task) => task.isCompleted)
                 .toList(),
-            onDelete: _deleteTodo,
+            onDelete: _deleteTodoItem,
             onStatusChange: _toggleTodoStatus,
           );
         }),
@@ -151,9 +169,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   /// Delete a Todo by index
   void _deleteTodo(int index) {
-    setState(() {
-      _todoList.removeAt(index);
-    });
+
   }
 
   /// Toggle a Todo's done status
@@ -183,4 +199,31 @@ class _TodoListScreenState extends State<TodoListScreen> {
       },
     );
   }
+
+  Future<void> _signOut() async {
+    final result = await Get.find<SignOutController>().signOut();
+
+    if (result) {
+      Get.offAll(() => const SignInScreen());
+      AuthController().clearUserData();
+      Get.find<AllTodoListController>().update();
+      successSnackBar('Sign out', 'Successfully signed out');
+    } else {
+      failureSnackbar('Sign out', 'Signing out failed!! Please Try Again');
+    }
+  }
+
+  Future<void> _deleteTodoItem(int todoItemId) async {
+    final result = await Get.find<DeleteTodoItemController>().deleteTodoItem(todoItemId);
+
+    if(result){
+      Get.find<AllTodoListController>().fetchAllTodoList(user?.id ?? '');
+      Get.find<AllTodoListController>().update();
+      setState(() {});
+      log('Success');
+    }else{
+      log('Failed');
+    }
+  }
+
 }
