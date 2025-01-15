@@ -55,7 +55,18 @@ class _AddNewTodoState extends State<AddNewTodoScreen> {
                         controller: _titleTEController,
                         decoration: const InputDecoration(
                           hintText: 'Title',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
                         ),
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
                         autovalidateMode: AutovalidateMode.disabled,
                         validator: (String? value) {
                           if (value?.trim().isEmpty ?? true) {
@@ -71,9 +82,19 @@ class _AddNewTodoState extends State<AddNewTodoScreen> {
                         controller: _descriptionTEController,
                         decoration: const InputDecoration(
                           hintText: 'Description',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
                         ),
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
                         autovalidateMode: AutovalidateMode.disabled,
-                        maxLines: 6,
                         validator: (String? value) {
                           if (value?.trim().isEmpty ?? true) {
                             return 'Enter Your Description';

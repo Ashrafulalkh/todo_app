@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/data/models/task/task_model.dart';
-import 'package:todo_app/data/models/todo.dart';
 import 'package:todo_app/ui/screens/todo_list/edit_todo_screen.dart';
 import 'package:todo_app/ui/utils/app_colors.dart';
 
@@ -41,66 +40,58 @@ class TodoDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              todo.title,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                todo.title,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              DateFormat.yMMMMEEEEd().add_jm().format(todo.createdAt!),
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
+              const SizedBox(height: 16),
+              Text(
+                DateFormat.yMMMMEEEEd().add_jm().format(todo.createdAt!),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                ),
               ),
-            ),
-            const Divider(
-              thickness: 1,
-              height: 32,
-            ),
-            Text(
-              todo.description,
-              style: const TextStyle(
-                fontSize: 16,
-                height: 1.5,
-                color: Colors.black87,
+              const Divider(
+                thickness: 1,
+                height: 32,
               ),
-            ),
-            const Spacer(),
-            if (todo.isCompleted)
-              const Align(
+              Text(
+                todo.description,
+                style: const TextStyle(
+                  fontSize: 16,
+                  height: 1.5,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Align(
                 alignment: Alignment.centerRight,
                 child: Chip(
                   label: Text(
-                    "Completed",
-                    style: TextStyle(color: Colors.black),
+                    todo.isCompleted ? "Completed" : "Pending",
+                    style: TextStyle(
+                      color: todo.isCompleted ? Colors.black : Colors.white,
+                    ),
                   ),
-                  backgroundColor: AppColors.themeColor,
-                ),
-              )
-            else
-              const Align(
-                alignment: Alignment.centerRight,
-                child: Chip(
-                  label: Text(
-                    "Pending",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: Colors.orange,
+                  backgroundColor:
+                  todo.isCompleted ? AppColors.themeColor : Colors.orange,
                 ),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
