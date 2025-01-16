@@ -24,140 +24,141 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
+    final size = MediaQuery.of(context).size;
+    final isLargeScreen = size.width > 600;
+
+    final content = SingleChildScrollView(
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 35,
+          child: Column(
+            children: [
+              const SizedBox(height: 35),
+              const SvgPictureWidget(
+                assetPath: AssetsPath.signUpImage,
+                height: 290,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _firstNameTEController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (String? value) {
+                  if (value!.isEmpty) {
+                    return 'Enter your first name';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Enter your first name',
                 ),
-                const SvgPictureWidget(
-                  assetPath: AssetsPath.signUpImage,
-                  height: 290,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _lastNameTEController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (String? value) {
+                  if (value!.isEmpty) {
+                    return 'Enter your last name';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Enter your last name',
                 ),
-                const SizedBox(
-                  height: 10,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _emailTEController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (String? value) {
+                  if (value!.isEmpty) {
+                    return 'Enter your email';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Enter your email',
                 ),
-                const SizedBox(
-                  height: 16,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordTEController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (String? value) {
+                  if (value!.isEmpty) {
+                    return 'Enter your password';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Enter your password',
                 ),
-                TextFormField(
-                  controller: _firstNameTEController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (String? value) {
-                    if (value!.isEmpty) {
-                      return 'Enter a firstName';
-                    }
-                    return null;
-                  },
-                  decoration:
-                      const InputDecoration(hintText: 'Enter your first name'),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                TextFormField(
-                  controller: _lastNameTEController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (String? value) {
-                    if (value!.isEmpty) {
-                      return 'Enter a lastName';
-                    }
-                    return null;
-                  },
-                  decoration:
-                      const InputDecoration(hintText: 'Enter your last name'),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                TextFormField(
-                  controller: _emailTEController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (String? value) {
-                    if (value!.isEmpty) {
-                      return 'Enter a email';
-                    }
-                    return null;
-                  },
-                  decoration:
-                      const InputDecoration(hintText: 'Enter your email'),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                TextFormField(
-                  controller: _passwordTEController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (String? value) {
-                    if (value!.isEmpty) {
-                      return 'Enter a password';
-                    }
-                    return null;
-                  },
-                  decoration:
-                      const InputDecoration(hintText: 'Enter your password'),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                GetBuilder<SignUpController>(
-                  builder: (signUpController) {
-                    return Visibility(
-                      visible: !signUpController.inProgress,
-                      replacement: const Loader(),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _onTapRegisterButton();
-                        },
-                        child: const Text('Register',style: TextStyle(fontSize: 16),),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Don't have an account"),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.offAll(() => const SignInScreen());
-                      },
+              ),
+              const SizedBox(height: 16),
+              GetBuilder<SignUpController>(
+                builder: (signUpController) {
+                  return Visibility(
+                    visible: !signUpController.inProgress,
+                    replacement: const Loader(),
+                    child: ElevatedButton(
+                      onPressed: _onTapRegisterButton,
                       child: const Text(
-                        'Sign In',
-                        style: TextStyle(color: AppColors.themeColor,fontWeight: FontWeight.bold),
+                        'Register',
+                        style: TextStyle(fontSize: 16),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  );
+                },
+              ),
+              const SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Already have an account?"),
+                  const SizedBox(width: 6),
+                  GestureDetector(
+                    onTap: () {
+                      Get.offAll(() => const SignInScreen());
+                    },
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(
+                        color: AppColors.themeColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: isLargeScreen
+          ? Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: content,
+        ),
+      )
+          : content,
+    );
   }
 
   Future<void> _onTapRegisterButton() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
+
     final bool result = await Get.find<SignUpController>().signUp(
-        _firstNameTEController.text.trim(),
-        _lastNameTEController.text.trim(),
-        _emailTEController.text.trim(),
-        _passwordTEController.text);
+      _firstNameTEController.text.trim(),
+      _lastNameTEController.text.trim(),
+      _emailTEController.text.trim(),
+      _passwordTEController.text,
+    );
 
     if (result) {
       Get.offAll(() => const SignInScreen());
@@ -175,5 +176,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordTEController.dispose();
     super.dispose();
   }
-
 }

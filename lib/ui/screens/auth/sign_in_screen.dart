@@ -25,137 +25,137 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+    final size = MediaQuery.of(context).size;
+    final isLargeScreen = size.width > 600;
+
+    final content = SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 35,
-                ),
-                const SvgPictureWidget(
-                  assetPath: AssetsPath.signInImage,
-                  height: 300,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  controller: _emailTEController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (String? value) {
-                    if (value!.isEmpty) {
-                      return 'Enter a email';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your email',
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                TextFormField(
-                  obscureText: _showPassword == false,
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        _showPassword = !_showPassword;
-                        if (mounted) {
-                          setState(() {});
-                        }
-                      },
-                      icon: Icon(_showPassword
-                          ? Icons.visibility_off
-                          : Icons.visibility),
-                    ),
-                  ),
-                  validator: (String? value) {
-                    if (value?.trim().isEmpty ?? true) {
-                      return 'Enter Your Password';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                GetBuilder<SignInController>(
-                  builder: (signInController) {
-                    return Visibility(
-                      visible: !signInController.inProgress,
-                      replacement: const Loader(),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _onTapLogInButton();
-                        },
-                        child: const Text(
-                          'Log In',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    );
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 35),
+              const SvgPictureWidget(
+                assetPath: AssetsPath.signInImage,
+                height: 300,
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _emailTEController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value?.isEmpty ?? true) {
+                    return 'Enter an email';
                   }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Enter your email',
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    'Forgot Password?',
-                    style: TextStyle(fontSize: 15, color: Colors.grey),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                obscureText: !_showPassword,
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  hintText: 'Password',
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _showPassword = !_showPassword;
+                      });
+                    },
+                    icon: Icon(
+                      _showPassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Already have an account?'),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(() => const SignUpScreen());
-                      },
+                validator: (value) {
+                  if (value?.isEmpty ?? true) {
+                    return 'Enter your password';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              GetBuilder<SignInController>(
+                builder: (signInController) {
+                  return Visibility(
+                    visible: !signInController.inProgress,
+                    replacement: const Loader(),
+                    child: ElevatedButton(
+                      onPressed: _onTapLogInButton,
                       child: const Text(
-                        'Sign Up',
-                        style: TextStyle(
-                            color: AppColors.themeColor,
-                            fontWeight: FontWeight.bold),
+                        'Log In',
+                        style: TextStyle(fontSize: 16),
                       ),
                     ),
-                  ],
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  // Handle forgot password functionality
+                },
+                child: const Text(
+                  'Forgot Password?',
+                  style: TextStyle(fontSize: 15, color: Colors.grey),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Don\'t have an account?'),
+                  const SizedBox(width: 6),
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => const SignUpScreen());
+                    },
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: AppColors.themeColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: isLargeScreen
+          ? Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: content,
+        ),
+      )
+          : content,
+    );
   }
 
   Future<void> _onTapLogInButton() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
+
     final bool result = await Get.find<SignInController>()
         .signIn(_emailTEController.text.trim(), _passwordController.text);
 
     if (result) {
       Get.offAll(() => const TodoListScreen());
     } else {
-      failureSnackbar('Sign In', 'Signed In failed!! Please try again');
+      failureSnackbar('Sign In', 'Sign In failed! Please try again.');
     }
   }
 
@@ -165,5 +165,4 @@ class _SignInScreenState extends State<SignInScreen> {
     _passwordController.dispose();
     super.dispose();
   }
-
 }
